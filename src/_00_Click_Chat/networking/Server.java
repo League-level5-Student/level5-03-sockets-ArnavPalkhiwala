@@ -26,7 +26,7 @@ public class Server {
 
 	public void start(){
 		try {
-			server = new ServerSocket(port, 100);
+			server = new ServerSocket(port);
 
 			connection = server.accept();
 
