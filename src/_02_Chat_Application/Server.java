@@ -1,4 +1,4 @@
-package _00_Click_Chat.networking;
+package _02_Chat_Application;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -62,29 +62,14 @@ public class Server {
 		return port;
 	}
 
-	public void sendClick() {
+	void sendMessage(String message) {
 		try {
 			if (os != null) {
-				os.writeObject("CLICK SENT FROM SERVER");
-				os.flush();
+				os.writeObject("Message from server: " + message);
+				JOptionPane.showMessageDialog(null, "Message from server: " + message);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public void sendMessage(String message) {
-		// TODO Auto-generated method stub
+	}}
 	
-			try {
-				if (os != null) {
-					os.writeObject("Message from server: " + message);
-					JOptionPane.showMessageDialog(null, "Message from server: " + message);
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		
-	
-}

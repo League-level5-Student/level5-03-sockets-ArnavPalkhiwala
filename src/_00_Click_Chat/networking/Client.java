@@ -22,7 +22,7 @@ public class Client {
 		this.port = port;
 	}
 
-	public void start(){
+	public void start() {
 		try {
 
 			connection = new Socket(ip, port);
@@ -32,13 +32,13 @@ public class Client {
 
 			os.flush();
 
-			//testrunrunrun
-			
+			// testrunrunrun
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		while (connection.isConnected()) {
 			try {
 				JOptionPane.showMessageDialog(null, is.readObject());
@@ -49,12 +49,25 @@ public class Client {
 			}
 		}
 	}
-	
+
 	public void sendClick() {
 		try {
 			if (os != null) {
 				os.writeObject("CLICK SENT FROM CLIENT");
 				os.flush();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void sendMessage(String message) {
+		// TODO Auto-generated method stub
+
+		try {
+			if (os != null) {
+				os.writeObject("Message from server: " + message);
+				JOptionPane.showMessageDialog(null, "Message from client: " + message);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

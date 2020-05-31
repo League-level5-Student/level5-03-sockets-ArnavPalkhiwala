@@ -3,11 +3,16 @@ package _02_Chat_Application;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 import _00_Click_Chat.networking.Client;
 import _00_Click_Chat.networking.Server;
@@ -21,6 +26,12 @@ public class ChatApp {
 	Client client;
 	String message = "";
 	ServerSocket ss;
+	JFrame frame = new JFrame();
+	JPanel panel = new JPanel();
+	JButton button = new JButton("Click");
+
+	ObjectOutputStream os;
+	ObjectInputStream is;
 
 	public static void main(String[] args) {
 		new ChatApp();
@@ -28,45 +39,41 @@ public class ChatApp {
 
 	public ChatApp() {
 
-		
-		String response = JOptionPane.showInputDialog(null,
-				"Do you want to host a new connection? \nRespond with 'yes' or 'no' ");
-
-		if (response.equalsIgnoreCase("yes")) {
+		int response = JOptionPane.showConfirmDialog(null, "Would you like to host a connection?", "Buttons!",
+				JOptionPane.YES_NO_OPTION);
+		if (response == JOptionPane.YES_OPTION) {
 			server = new Server(8080);
+			frame.setTitle("Server");
 			JOptionPane.showMessageDialog(null,
 					"Server started at: " + server.getIPAddress() + "\nPort: " + server.getPort());
-			message = JOptionPane.showInputDialog("What message would you like to send to the client?");
-			try {
-				ss = new ServerSocket(8080);
-				Socket socket = ss.accept();
-				DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-				dos.writeUTF(message);
-				socket.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				JOptionPane.showMessageDialog(null, "You must have made a mistake. \nThere was an errror. \nTry again");
-			}
+			button.addActionListener((e) -> {
+				String message = JOptionPane.showInputDialog("What message do you want to send to the client?");
+				server.sendMessage(message);
+			});
+			frame.add(panel);
+			panel.add(button);
+			frame.setVisible(true);
+			frame.setSize(400, 300);
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			server.start();
-		}
 
-		else {
+		} else {
 			String ipStr = JOptionPane.showInputDialog("Enter the IP Address");
 			String prtStr = JOptionPane.showInputDialog("Enter the port number");
 			int port = Integer.parseInt(prtStr);
 			client = new Client(ipStr, port);
-			try {
-				Socket s = new Socket("192.168.86.63", 8080);
-				
-				DataInputStream dis = new DataInputStream(s.getInputStream());
-				String messages = dis.readUTF();
-				System.out.println(messages);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				JOptionPane.showMessageDialog(null, "Try again \nThere was an error.");
-			}
-			
-
+			frame.setTitle("Client");
+			button.addActionListener((e) -> {
+				String message = JOptionPane.showInputDialog("What message do you want to send to the server?");
+				client.sendMessage(message);
+			});
+			frame.add(panel);
+			panel.add(button);
+			frame.setVisible(true);
+			frame.setSize(400, 300);
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			client.start();
 		}
+
 	}
 }
